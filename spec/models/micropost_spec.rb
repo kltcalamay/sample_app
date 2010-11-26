@@ -73,4 +73,17 @@ describe Micropost do
       Micropost.from_users_followed_by(@user).should_not include(@third_post)
     end
   end
+
+  describe "replies (i.e. micropost body contains @username)" do
+    before(:each) do
+      @recipient1 = Factory(:user, :username => 'r1', :email => 'ex@mple1.com')
+      @recipient2 = Factory(:user, :username => 'r2', :email => 'ex@mple2.com')
+      @recipient3 = Factory(:user, :username => 'r3', :email => 'ex@mple3.com')
+    end
+
+    it "should be associated with users whom that username belongs to" do
+      micropost = @user.microposts.create!(:content => "@r1, @r2 talk to @r3")
+      micropost.replied_users.should == [@recipient1, @recipient2, @recipient3]
+    end
+  end
 end
