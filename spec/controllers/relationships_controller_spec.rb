@@ -19,7 +19,8 @@ describe RelationshipsController do
 
     before(:each) do
       @user = test_sign_in(Factory(:user))
-      @followed = Factory(:user, :email => Factory.next(:email))
+      @followed = Factory(:user, :email => Factory.next(:email),
+                                 :username => Factory.next(:username))
     end
 
     it "should create a relationship" do
@@ -41,7 +42,8 @@ describe RelationshipsController do
 
     before(:each) do
       @user = test_sign_in(Factory(:user))
-      @followed = Factory(:user, :email => Factory.next(:email))
+      @followed = Factory(:user, :email => Factory.next(:email),
+                                 :username => Factory.next(:username))
       @user.follow!(@followed)
       @relationship = @user.relationships.find_by_followed_id(@followed)
     end

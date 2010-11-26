@@ -5,9 +5,10 @@ describe User do
   before(:each) do
     @attr = {
       :name => "Example User",
+      :username => "exampleuser",
       :email => "user@example.com",
       :password => "foobar",
-      :password_confirmation => "foobar"
+      :password_confirmation => "foobar",
     }
   end
 
@@ -18,6 +19,47 @@ describe User do
   it "should require a name" do
     no_name_user = User.new(@attr.merge(:name => ""))
     no_name_user.should_not be_valid
+  end
+
+  it "should require a username" do
+    no_username_user = User.new(@attr.merge(:username => ""))
+    no_username_user.should_not be_valid
+  end
+
+  it "should reject usernames that are too long" do
+    long_name = "a" * 16
+    long_name_user = User.new(@attr.merge(:username => long_name))
+    long_name_user.should_not be_valid
+  end
+
+  it "should accept valid usernames" do
+    usernames = ["uname007", "uname", "u_name", "u_name_007", "u_007_name"]
+    usernames.each do |username|
+      valid_username_user = User.new(@attr.merge(:username => username))
+      valid_username_user.should be_valid
+    end
+  end
+
+  it "should reject invalid usernames" do
+    usernames = ["u name", "u-name", "uname_", "007uname", "u*name", "u)name"]
+    usernames.each do |username|
+      invalid_username_user = User.new(@attr.merge(:username => username))
+      invalid_username_user.should_not be_valid
+    end
+  end
+
+  it "should reject duplicate usernames" do
+    # Put a user with given username address into the database.
+    User.create!(@attr)
+    user_with_duplicate_username = User.new(@attr.merge(:email => 'x@mple.com'))
+    user_with_duplicate_username.should_not be_valid
+  end
+
+  it "should reject usernames identical up to case" do
+    upcased_uname = @attr[:username].upcase
+    User.create!(@attr.merge(:username => upcased_uname, :email => 'x@mpl.com'))
+    user_with_duplicate_uname = User.new(@attr)
+    user_with_duplicate_uname.should_not be_valid
   end
 
   it "should require an email address" do
@@ -50,13 +92,13 @@ describe User do
   it "should reject duplicate email addresses" do
     # Put a user with given email address into the database.
     User.create!(@attr)
-    user_with_duplicate_email = User.new(@attr)
+    user_with_duplicate_email = User.new(@attr.merge(:username => 'other'))
     user_with_duplicate_email.should_not be_valid
   end
 
   it "should reject email addresses identical up to case" do
     upcased_email = @attr[:email].upcase
-    User.create!(@attr.merge(:email => upcased_email))
+    User.create!(@attr.merge(:email => upcased_email, :username => 'other'))
     user_with_duplicate_email = User.new(@attr)
     user_with_duplicate_email.should_not be_valid
   end

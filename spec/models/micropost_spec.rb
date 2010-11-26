@@ -45,8 +45,10 @@ describe Micropost do
   describe "from_users_followed_by" do
 
     before(:each) do
-      @other_user = Factory(:user, :email => Factory.next(:email))
-      @third_user = Factory(:user, :email => Factory.next(:email))
+      @other_user = Factory(:user, :email => Factory.next(:email),
+                                   :username => Factory.next(:username))
+      @third_user = Factory(:user, :email => Factory.next(:email),
+                                   :username => Factory.next(:username))
 
       @user_post  = @user.microposts.create!(:content => "foo")
       @other_post = @other_user.microposts.create!(:content => "bar")

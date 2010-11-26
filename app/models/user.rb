@@ -15,7 +15,7 @@
 
 class User < ActiveRecord::Base
   attr_accessor :password
-  attr_accessible :name, :email, :password, :password_confirmation
+  attr_accessible :name, :email, :password, :password_confirmation, :username
 
   has_many :microposts, :dependent => :destroy
   has_many :relationships, :foreign_key => "follower_id",
@@ -27,9 +27,15 @@ class User < ActiveRecord::Base
   has_many :followers, :through => :reverse_relationships, :source => :follower
 
   email_regex = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
+  uname_regex = /^[a-z]\w*[a-z0-9]$/i
 
   validates :name, :presence => true,
                    :length   => { :maximum => 50 }
+
+  validates :username, :presence   => true,
+                       :length     => { :maximum => 15 },
+                       :format     => { :with => uname_regex },
+                       :uniqueness => { :case_sensitive => false }
 
   validates :email, :presence   => true,
                     :format     => { :with => email_regex },
