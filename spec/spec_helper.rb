@@ -40,6 +40,19 @@ Spork.prefork do
     def test_sign_in(user)
       controller.sign_in(user)
     end
+
+    def integration_signin(user)
+      visit '/signin'
+      fill_in :email, :with => user.email
+      fill_in :password, :with => user.password
+      click_button
+    end
+
+    def post_micropost(content)
+      visit '/'
+      fill_in :micropost_content, :with => content
+      click_button
+    end
   end
 end
 

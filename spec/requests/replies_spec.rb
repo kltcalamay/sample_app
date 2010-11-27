@@ -22,19 +22,4 @@ describe "Replies" do
     click_link "Home"
     response.should have_selector("span.content", :content => @reply)
   end
-
-  private
-
-    def integration_signin(user)
-      visit '/signin'
-      fill_in :email, :with => user.email
-      fill_in :password, :with => user.password
-      click_button
-    end
-
-    def post_micropost(content)
-      visit '/'
-      fill_in :micropost_content, :with => content
-      click_button
-    end
 end
