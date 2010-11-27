@@ -30,7 +30,7 @@ class User < ActiveRecord::Base
   has_many :received_replies, :through => :replies, :source => 'micropost'
 
   email_regex = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
-  uname_regex = /^[a-z]\w*[a-z0-9]$/i
+  uname_regex = /^[a-z](\w*[a-z0-9])*$/i
 
   validates :name, :presence => true,
                    :length   => { :maximum => 50 }
