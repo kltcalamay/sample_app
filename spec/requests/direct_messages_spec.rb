@@ -15,14 +15,30 @@ describe "DirectMessages" do
     integration_signin @sender
     click_link "Direct Messages"
     click_link "Sent Items"
-    response.should have_selector("td", :content => @direct_message)
+    response.should contain(@direct_message)
   end
 
-  it "should appear at the recipient's received messages page"
+  it "should appear at the recipient's received messages page" do
+    integration_signin @recipient
+    click_link "Direct Messages"
+    response.should contain(@direct_message)
+  end
 
-  it "should not appear at the sender's received messages page"
+  it "should not appear at the sender's received messages page" do
+    integration_signin @sender
+    visit received_direct_messages_path
+    response.should_not contain(@direct_message)
+  end
 
-  it "should not appear at the recipient's sent messages page"
+  it "should not appear at the recipient's sent messages page" do
+    integration_signin @recipient
+    visit sent_direct_messages_path
+    response.should_not contain(@direct_message)
+  end
 
-  it "should not appear at the user's feed"
+  it "should not appear at the user's feed" do
+    integration_signin @sender
+    visit root_path
+    response.should_not contain(@direct_message)
+  end
 end

@@ -4,6 +4,7 @@ class DirectMessagesController < ApplicationController
   end
 
   def received
+    @direct_messages = DirectMessage.where(["recipient_id = ?", current_user])
   end
 
 end
