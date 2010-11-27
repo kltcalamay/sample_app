@@ -72,6 +72,12 @@ describe Micropost do
     it "should not include an unfollowed user's microposts" do
       Micropost.from_users_followed_by(@user).should_not include(@third_post)
     end
+
+    it "should include replies to the user in question" do
+      third_reply = @third_user.microposts.create!(
+        :content => "@#{@user.username} reply")
+      Micropost.from_users_followed_by(@user).should include( third_reply )
+    end
   end
 
   describe "replies (i.e. micropost body contains @username)" do
@@ -79,11 +85,19 @@ describe Micropost do
       @recipient1 = Factory(:user, :username => 'r1', :email => 'ex@mple1.com')
       @recipient2 = Factory(:user, :username => 'r2', :email => 'ex@mple2.com')
       @recipient3 = Factory(:user, :username => 'r3', :email => 'ex@mple3.com')
+      @micropost = @user.microposts.create!(:content => "@r1, @r2 talk to @r3")
     end
 
     it "should be associated with users whom that username belongs to" do
-      micropost = @user.microposts.create!(:content => "@r1, @r2 talk to @r3")
-      micropost.replied_users.should == [@recipient1, @recipient2, @recipient3]
+      @micropost.replied_users.should == [@recipient1, @recipient2, @recipient3]
+    end
+
+    context "when this micropost is deleted" do
+      it "should delete associated replied-to users" do
+        @micropost.destroy
+        associations = Recipient.where("micropost_id = #{@micropost.id}")
+        associations.should be_blank
+      end
     end
   end
 end

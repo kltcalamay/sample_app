@@ -297,4 +297,25 @@ describe User do
       @followed.followers.should include(@user)
     end
   end
+
+  context "when mentioned by other users (i.e. @my_username)" do
+
+    before(:each) do
+      @user = Factory(:user, :username => 'my_username')
+      @other = Factory(:user, :email => Factory.next(:email))
+      @other.microposts.create!(:content => "@my_username what's up?")
+    end
+
+    it "should be associated with the resulting micropost" do
+      @user.received_replies.should include( @other.microposts.last )
+    end
+
+    context "when this user is deleted" do
+      it "should delete associations with all replies" do
+        @user.destroy
+        associations = Recipient.where("user_id = #{@user.id}")
+        associations.should be_blank
+      end
+    end
+  end
 end
