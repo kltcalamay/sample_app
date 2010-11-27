@@ -62,6 +62,26 @@ describe MicropostsController do
         flash[:success].should =~ /micropost created/i
       end
     end
+
+    context "when micropost looks like a direct mesage" do
+      before(:each) do
+        @sender = Factory(:user, :username => "sender", :email => 's@x.com')
+        @recipient = Factory(:user, :username => 'recipient', :email => 'r@x.com')
+        @direct_message = { :content => "d recipient direct message" }
+      end
+
+      it "should be saved into the direct_messages table instead" do
+        expect {
+          post :create, :micropost => @direct_message
+        }.to change(DirectMessage, :count).by(1)
+      end
+
+      it "should not be saved into the microposts table" do
+        expect {
+          post :create, :micropost => @direct_message
+        }.to change(Micropost, :count).by(0)
+      end
+    end
   end
 
   describe "DELETE 'destroy'" do

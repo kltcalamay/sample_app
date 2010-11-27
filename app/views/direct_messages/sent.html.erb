@@ -1,0 +1,14 @@
+<%= render :partial => 'menu' %>
+
+<table>
+  <tr>
+    <th>Recipient</th>
+    <th>Message</th>
+  </tr>
+  <% @direct_messages.each do |dm| %>
+    <tr>
+      <td><%= dm.recipient.name %></td>
+      <td><%= dm.content %></td>
+    </tr>
+  <% end %>
+</table>

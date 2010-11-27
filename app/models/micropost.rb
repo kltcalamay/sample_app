@@ -11,9 +11,11 @@
 #
 
 class Micropost < ActiveRecord::Base
-  attr_accessible :content, :recipients
+  attr_accessor   :recipient
+  attr_accessible :content
 
   USERNAME_REGEX = /@\w+/i
+  DIRECT_MESSAGE_REGEX = /^d\s[a-z](\w*[a-z0-9])*\s/i
 
   belongs_to :user
 
@@ -29,6 +31,18 @@ class Micropost < ActiveRecord::Base
   scope :from_users_followed_by, lambda { |user| followed_by(user) }
 
   after_save :save_recipients
+
+  def direct_message_format?
+    self.content.clone.match(DIRECT_MESSAGE_REGEX) && message_recipient
+  end
+
+  def to_direct_message_hash
+    body = self.content.clone
+    body.slice!(DIRECT_MESSAGE_REGEX) # remove 'd username '
+    
+    { :content => body, :sender_id => self.user_id,
+      :recipient_id => message_recipient.id }
+  end
 
   private
 
@@ -59,5 +73,15 @@ class Micropost < ActiveRecord::Base
         users << user if user
       end
       users.uniq
+    end
+
+    def extract_username_from_direct_message
+      username = self.content.clone.match( DIRECT_MESSAGE_REGEX )[0].strip
+      username.slice!('d ')
+      username
+    end
+
+    def message_recipient
+      @recipient ||= User.find_by_username(extract_username_from_direct_message)
     end
 end

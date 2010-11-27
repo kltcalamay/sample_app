@@ -42,6 +42,30 @@ describe Micropost do
     end
   end
 
+  describe "#direct_message_format?" do
+    context "when content starts with 'd'" do
+      it "should return true if username is valid" do
+        Factory(:user, :username => "recipient", :email => 'r@xmpl.com')
+        micropost = @user.microposts.build(:content => "d recipient valid direct message")
+        micropost.direct_message_format?.should be_true
+      end
+
+      it "should return false if username is invalid" do
+        micropost = @user.microposts.build(:content => "d invalid_recipient invalid direct message")
+        micropost.direct_message_format?.should be_false
+      end
+    end
+  end
+
+  describe "#to_direct_message_hash" do
+    it "should return a hash that can be readily sent to DirectMessage#new" do
+      Factory(:user, :username => "recipient", :email => 'r@xmpl.com')
+      micropost = @user.microposts.build(:content => "d recipient valid direct message")
+      direct_message = DirectMessage.new( micropost.to_direct_message_hash )
+      direct_message.should be_valid
+    end
+  end
+
   describe "from_users_followed_by" do
 
     before(:each) do

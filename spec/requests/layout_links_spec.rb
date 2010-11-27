@@ -62,5 +62,24 @@ describe "LayoutLinks" do
       response.should have_selector("a", :href => received_direct_messages_path,
                                          :content => "Direct Messages")
     end
+
+    context "within Direct Messages link" do
+
+      it "should have a 'Sent Items' link" do
+        visit root_path
+        click_link "Direct Messages"
+        response.should have_selector("a", :href => sent_direct_messages_path,
+                                           :content => "Sent Items")
+      end
+
+      # visit "Sent Items" first to make "Received Items" a hyperlink
+      it "should have a 'Received Items' link" do
+        visit root_path
+        click_link "Direct Messages"
+        click_link "Sent Items"
+        response.should have_selector("a", :href => received_direct_messages_path,
+                                           :content => "Received Items")
+      end
+    end
   end
 end
