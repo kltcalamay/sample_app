@@ -1,4 +1,9 @@
 SampleApp::Application.routes.draw do
+  resources :direct_messages do
+    get :received, :on => :collection
+    get :sent, :on => :collection
+  end
+
   resources :users do
     member do
       get :following, :followers

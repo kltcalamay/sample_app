@@ -56,5 +56,11 @@ describe "LayoutLinks" do
       response.should have_selector("a", :href => user_path(@user),
                                          :content => "Profile")
     end
+
+    it "should have a direct_messages link" do
+      visit root_path
+      response.should have_selector("a", :href => received_direct_messages_path,
+                                         :content => "Direct Messages")
+    end
   end
 end
