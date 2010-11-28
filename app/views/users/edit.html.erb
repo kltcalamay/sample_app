@@ -18,6 +18,10 @@
     <%= f.label :password_confirmation, "Confirmation" %><br />
     <%= f.password_field :password_confirmation %>
   </div>
+  <div class="field">
+    <%= f.check_box :follower_notifications %>
+    <%= f.label :follower_notifications, "Email me when someone starts following" %>
+  </div>
   <div class="actions">
     <%= f.submit "Update" %>
   </div>

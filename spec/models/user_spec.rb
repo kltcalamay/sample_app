@@ -103,6 +103,10 @@ describe User do
     user_with_duplicate_email.should_not be_valid
   end
 
+  it "should have a follower_notifications attribute" do
+    User.new.should respond_to(:follower_notifications)
+  end
+
   describe "password validations" do
 
     it "should require a password" do

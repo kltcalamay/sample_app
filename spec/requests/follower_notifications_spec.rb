@@ -23,7 +23,12 @@ describe "FollowerNotifications" do
   end
 
   context "when turned off" do
-    it "should NOT be emailed to users when someone starts following them"
+    it "should NOT be emailed to users when someone starts following them" do
+      expect {
+        @followed.toggle!(:follower_notifications) # from true(default) to false
+        integration_follow(:followed => @followed, :follower => @follower)
+      }.to change(EMAILS, :size).by(0)
+    end
   end
 
   private
