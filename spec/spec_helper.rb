@@ -37,6 +37,8 @@ Spork.prefork do
     # railties/lib/rails/application/bootstrap.rb
     ActiveSupport::Dependencies.clear
 
+    EMAILS = ActionMailer::Base.deliveries
+
     def test_sign_in(user)
       controller.sign_in(user)
     end

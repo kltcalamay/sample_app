@@ -17,4 +17,24 @@ describe UserMailer do
       email.subject.should eq("Follower notification")
     end
   end
+
+  describe "#password_recovery(options)" do
+    before do
+      @user = Factory(:user)
+      @options = {
+        :token => "a1Ab2Bc3C", :host => 'localhost', :email => @user.email
+      }
+      UserMailer.password_recovery(@options).deliver
+    end
+
+    it "should have the right recipient" do
+      EMAILS.last.to.should == [ @user.email ]
+    end
+
+    it "should have the right body" do
+      email_body = EMAILS.last.body.encoded
+      email_body.should contain(
+        "http://#{@options[:host]}#{reset_password_reminder_path(@options[:token])}")
+    end
+  end
 end

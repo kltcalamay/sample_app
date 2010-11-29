@@ -1,5 +1,9 @@
 SampleApp::Application.routes.draw do
-  resources :direct_messages do
+  resources :password_reminders, :only => [:new, :create] do
+    get :reset, :on => :member
+  end
+
+  resources :direct_messages, :only => [] do
     get :received, :on => :collection
     get :sent, :on => :collection
   end
@@ -13,12 +17,13 @@ SampleApp::Application.routes.draw do
   resources :microposts,    :only => [:create, :destroy]
   resources :relationships, :only => [:create, :destroy]
 
-  match '/signup',  :to => 'users#new'
-  match '/signin',  :to => 'sessions#new'
-  match '/signout', :to => 'sessions#destroy'
-  match '/contact', :to => 'pages#contact'
-  match '/about',   :to => 'pages#about'
-  match '/help',    :to => 'pages#help'
+  match '/recover_password', :to => 'password_reminders#new'
+  match '/signup',           :to => 'users#new'
+  match '/signin',           :to => 'sessions#new'
+  match '/signout',          :to => 'sessions#destroy'
+  match '/contact',          :to => 'pages#contact'
+  match '/about',            :to => 'pages#about'
+  match '/help',             :to => 'pages#help'
 
   root :to => 'pages#home'
 

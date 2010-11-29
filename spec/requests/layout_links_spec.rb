@@ -27,6 +27,11 @@ describe "LayoutLinks" do
     response.should have_selector('title', :content => "Sign up")
   end
 
+  it "should have a password reminder page at /recover_password" do
+    get '/recover_password'
+    response.should have_selector("title", :content => "Recover password")
+  end
+
   describe "when not signed in" do
     it "should have a signin link" do
       visit root_path

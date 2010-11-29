@@ -47,7 +47,8 @@ class User < ActiveRecord::Base
   # Automatically create the virtual attribute 'password_confirmation'.
   validates :password, :presence     => true,
                        :confirmation => true,
-                       :length       => { :within => 6..40 }
+                       :length       => { :within => 6..40 },
+                       :unless       => :password_is_not_being_updated?
 
   before_save :encrypt_password
 
@@ -92,8 +93,10 @@ class User < ActiveRecord::Base
   private
 
     def encrypt_password
-      self.salt = make_salt if new_record?
-      self.encrypted_password = encrypt(password)
+      unless password_is_not_being_updated?
+        self.salt = make_salt
+        self.encrypted_password = encrypt(password)
+      end
     end
 
     def encrypt(string)
@@ -106,5 +109,9 @@ class User < ActiveRecord::Base
 
     def secure_hash(string)
       Digest::SHA2.hexdigest(string)
+    end
+
+    def password_is_not_being_updated?
+      self.id && self.password.blank?
     end
 end

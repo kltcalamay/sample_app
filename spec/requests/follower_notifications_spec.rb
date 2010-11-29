@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe "FollowerNotifications" do
-  EMAILS = ActionMailer::Base.deliveries
-
   before(:each) do
     @follower = Factory(:user, :email => "fr@example.com", :username => "fr")
     @followed = Factory(:user, :email => "fd@example.com", :username => "fd")
