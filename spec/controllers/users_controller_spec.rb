@@ -70,35 +70,30 @@ describe UsersController do
       @user = Factory(:user)
     end
 
-    it "should be successful" do
-      get :show, :id => @user
-      response.should be_success
-    end
-
     it "should find the right user" do
-      get :show, :id => @user
+      get :show, :id => @user.username
       assigns(:user).should == @user
     end
 
     it "should have the right title" do
-      get :show, :id => @user
+      get :show, :id => @user.username
       response.should have_selector("title", :content => @user.name)
     end
 
     it "should include the user's name" do
-      get :show, :id => @user
+      get :show, :id => @user.username
       response.should have_selector("h1", :content => @user.name)
     end
 
     it "should have a profile image" do
-      get :show, :id => @user
+      get :show, :id => @user.username
       response.should have_selector("h1>img", :class => "gravatar")
     end
 
     it "should show the user's microposts" do
       mp1 = Factory(:micropost, :user => @user, :content => "Foo bar")
       mp2 = Factory(:micropost, :user => @user, :content => "Baz quux")
-      get :show, :id => @user
+      get :show, :id => @user.username
       response.should have_selector("span.content", :content => mp1.content)
       response.should have_selector("span.content", :content => mp2.content)
     end
@@ -188,17 +183,17 @@ describe UsersController do
     end
 
     it "should be successful" do
-      get :edit, :id => @user
+      get :edit, :id => @user.username
       response.should be_success
     end
 
     it "should have the right title" do
-      get :edit, :id => @user
+      get :edit, :id => @user.username
       response.should have_selector("title", :content => "Edit user")
     end
 
     it "should have a link to change the Gravatar" do
-      get :edit, :id => @user
+      get :edit, :id => @user.username
       gravatar_url = "http://gravatar.com/emails"
       response.should have_selector("a", :href => gravatar_url,
                                          :content => "change")
@@ -220,12 +215,12 @@ describe UsersController do
       end
 
       it "should render the 'edit' page" do
-        put :update, :id => @user, :user => @attr
+        put :update, :id => @user.username, :user => @attr
         response.should render_template('edit')
       end
 
       it "should have the right title" do
-        put :update, :id => @user, :user => @attr
+        put :update, :id => @user.username, :user => @attr
         response.should have_selector("title", :content => "Edit user")
       end
     end
@@ -234,23 +229,23 @@ describe UsersController do
 
       before(:each) do
         @attr = { :name => "New Name", :email => "user@example.org",
-                  :password => "barbaz", :password_confirmation => "barbaz" }
+                  :password => "barbaz", :password_confirmation => "barbaz"}
       end
 
       it "should change the user's attributes" do
-        put :update, :id => @user, :user => @attr
+        put :update, :id => @user.username, :user => @attr
         @user.reload
         @user.name.should  == @attr[:name]
         @user.email.should == @attr[:email]
       end
 
       it "should redirect to the user show page" do
-        put :update, :id => @user, :user => @attr
-        response.should redirect_to(user_path(@user))
+        put :update, :id => @user.username, :user => @attr
+        response.should redirect_to(user_path(@user.username))
       end
 
       it "should have a flash message" do
-        put :update, :id => @user, :user => @attr
+        put :update, :id => @user.username, :user => @attr
         flash[:success].should =~ /updated/
       end
     end
@@ -265,12 +260,12 @@ describe UsersController do
     describe "for non-signed-in users" do
 
       it "should deny access to 'edit'" do
-        get :edit, :id => @user
+        get :edit, :id => @user.username
         response.should redirect_to(signin_path)
       end
 
       it "should deny access to 'update'" do
-        put :update, :id => @user, :user => {}
+        put :update, :id => @user.username, :user => {}
         response.should redirect_to(signin_path)
       end
     end
@@ -284,12 +279,12 @@ describe UsersController do
       end
 
       it "should require matching users for 'edit'" do
-        get :edit, :id => @user
+        get :edit, :id => @user.username
         response.should redirect_to(root_path)
       end
 
       it "should require matching users for 'update'" do
-        put :update, :id => @user, :user => {}
+        put :update, :id => @user.username, :user => {}
         response.should redirect_to(root_path)
       end
     end
@@ -303,7 +298,7 @@ describe UsersController do
 
     describe "as a non-signed-in user" do
       it "should deny access" do
-        delete :destroy, :id => @user
+        delete :destroy, :id => @user.username
         response.should redirect_to(signin_path)
       end
     end
@@ -311,7 +306,7 @@ describe UsersController do
     describe "as a non-admin user" do
       it "should protect the page" do
         test_sign_in(@user)
-        delete :destroy, :id => @user
+        delete :destroy, :id => @user.username
         response.should redirect_to(root_path)
       end
     end
@@ -326,12 +321,12 @@ describe UsersController do
 
       it "should destroy the user" do
         lambda do
-          delete :destroy, :id => @user
+          delete :destroy, :id => @user.username
         end.should change(User, :count).by(-1)
       end
 
       it "should redirect to the users page" do
-        delete :destroy, :id => @user
+        delete :destroy, :id => @user.username
         response.should redirect_to(users_path)
       end
     end
@@ -362,13 +357,13 @@ describe UsersController do
       end
 
       it "should show user following" do
-        get :following, :id => @user
+        get :following, :id => @user.username
         response.should have_selector("a", :href => user_path(@other_user),
                                            :content => @other_user.name)
       end
 
       it "should show user followers" do
-        get :followers, :id => @other_user
+        get :followers, :id => @other_user.username
         response.should have_selector("a", :href => user_path(@user),
                                            :content => @user.name)
       end

@@ -101,6 +101,10 @@ class User < ActiveRecord::Base
     Micropost.from_users_followed_by(self)
   end
 
+  def to_param
+    self.username
+  end
+
   private
 
     def encrypt_password
