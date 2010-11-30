@@ -41,6 +41,12 @@ describe PagesController do
         response.should have_selector("a", :href => followers_user_path(@user),
                                            :content => "1 follower")
       end
+
+      it "should show the usernames of micropost owners rather than names" do
+        @user.microposts.create!(:content => 'sample micropost')
+        get :home
+        response.should have_selector("span.user", :content => @user.username)
+      end
     end
   end
 
