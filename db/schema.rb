@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101128104951) do
+ActiveRecord::Schema.define(:version => 20101129130924) do
 
   create_table "direct_messages", :force => true do |t|
     t.integer  "sender_id"
@@ -59,6 +59,7 @@ ActiveRecord::Schema.define(:version => 20101128104951) do
     t.boolean  "admin",                  :default => false
     t.string   "username"
     t.boolean  "follower_notifications", :default => true
+    t.string   "state"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

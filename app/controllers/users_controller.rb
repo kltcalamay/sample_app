@@ -1,5 +1,7 @@
+require 'crypto'
+
 class UsersController < ApplicationController
-  before_filter :authenticate, :except => [:show, :new, :create]
+  before_filter :authenticate, :except => [:show, :new, :create, :confirm]
   before_filter :correct_user, :only => [:edit, :update]
   before_filter :admin_user,   :only => :destroy
 
@@ -26,9 +28,10 @@ class UsersController < ApplicationController
   def create
     @user = User.new(params[:user])
     if @user.save
-      sign_in @user
-      flash[:success] = "Welcome to the Sample App!"
-      redirect_to @user
+      UserMailer.signup_confirmation(:host => request.env['HTTP_HOST'],
+        :token => Crypto.encrypt("#{@user.id}"), :email => @user.email).deliver
+      flash[:notice] = "To complete registration, please check your email."
+      redirect_to root_url
     else
       @title = "Sign up"
       render 'new'
@@ -71,6 +74,22 @@ class UsersController < ApplicationController
     render 'show_follow'
   end
 
+  def confirm
+    begin
+      user = User.find( Crypto.decrypt(params[:id]) )
+      user.activate!
+      sign_in( user )
+      flash[:success] = "Account confirmed. Welcome #{user.name}!"
+      redirect_to root_url
+    rescue Transitions::InvalidTransition
+      sign_out if signed_in?
+      flash[:notice] = "Account is already activated. Please sign in instead."
+      redirect_to signin_path
+    rescue
+      flash[:error] = "Invalid confirmation token."
+      redirect_to root_url
+    end
+  end
 
   private
 

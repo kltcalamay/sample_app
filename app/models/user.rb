@@ -14,6 +14,8 @@
 #
 
 class User < ActiveRecord::Base
+    include ActiveRecord::Transitions
+    
   attr_accessor :password
   attr_accessible :name, :email, :password, :password_confirmation, :username
 
@@ -51,6 +53,15 @@ class User < ActiveRecord::Base
                        :unless       => :password_is_not_being_updated?
 
   before_save :encrypt_password
+
+  state_machine do
+    state :inactive
+    state :active
+
+    event :activate do
+      transitions :to => :active, :from => :inactive
+    end
+  end
 
   # Return true if the user's password matches the submitted password.
   def has_password?(submitted_password)

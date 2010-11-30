@@ -107,6 +107,19 @@ describe User do
     User.new.should respond_to(:follower_notifications)
   end
 
+  it "should have a state attribute" do
+    User.new.should respond_to(:state)
+  end
+
+  describe "#activate!" do
+    it "should change the user's state from inactive to active" do
+      @user = Factory(:user)   # creates an 'active' user by default so we must
+      @user.state = "inactive" # manually set user's state to inactive first
+      @user.activate!
+      @user.reload.state.should == "active"
+    end
+  end
+
   describe "password validations" do
 
     it "should require a password" do

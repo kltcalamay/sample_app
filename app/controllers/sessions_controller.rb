@@ -12,8 +12,13 @@ class SessionsController < ApplicationController
       @title = "Sign in"
       render 'new'
     else
-      sign_in user
-      redirect_back_or user
+      if user.state == "inactive"
+        flash[:error] = "Your account isn't confirmed. Please check your email."
+        redirect_to root_url
+      else
+        sign_in user
+        redirect_back_or user
+      end
     end
   end
 

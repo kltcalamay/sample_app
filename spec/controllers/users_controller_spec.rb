@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'crypto'
 
 describe UsersController do
   render_views
@@ -149,25 +150,32 @@ describe UsersController do
                   :username => 'newuser'}
       end
 
-      it "should create a user" do
+      it "should create a user in an inactive state" do
         lambda do
           post :create, :user => @attr
+          User.first.state.should == "inactive"
         end.should change(User, :count).by(1)
       end
 
-      it "should redirect to the user show page" do
+      it "should tell the user to confirm their account" do
         post :create, :user => @attr
-        response.should redirect_to(user_path(assigns(:user)))
-      end   
-
-      it "should have a welcome message" do
-        post :create, :user => @attr
-        flash[:success].should =~ /welcome to the sample app/i
+        flash[:notice].should =~ /check your email/i
       end
 
-      it "should sign the user in" do
+      it "should not sign in the user" do
         post :create, :user => @attr
-        controller.should be_signed_in
+        controller.should_not be_signed_in
+      end
+
+      it "should send a signup confirmation email" do
+        expect {
+          post :create, :user => @attr
+        }.to change(EMAILS, :size).by(1)
+      end
+
+      it "should redirect to the home page" do
+        post :create, :user => @attr
+        response.should redirect_to( root_url )
       end
     end
   end
@@ -364,6 +372,17 @@ describe UsersController do
         response.should have_selector("a", :href => user_path(@user),
                                            :content => @user.name)
       end
+    end
+  end
+
+  describe "GET 'confirm'" do
+    before(:each) do
+      @user = Factory(:user)
+    end
+
+    it "should activate the user's account" do
+      get :confirm, :id => Crypto.encrypt( "#{@user.id}" )
+      @user.reload.state.should == "active"
     end
   end
 end

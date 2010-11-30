@@ -19,7 +19,7 @@ describe UserMailer do
   end
 
   describe "#password_recovery(options)" do
-    before do
+    before(:each) do
       @user = Factory(:user)
       @options = {
         :token => "a1Ab2Bc3C", :host => 'localhost', :email => @user.email
@@ -35,6 +35,26 @@ describe UserMailer do
       email_body = EMAILS.last.body.encoded
       email_body.should contain(
         "http://#{@options[:host]}#{reset_password_reminder_path(@options[:token])}")
+    end
+  end
+
+  describe "#signup_confirmation(options)" do
+    before(:each) do
+      @user = Factory(:user)
+      @options = {
+        :token => "a1Ab2Bc3C", :host => 'localhost', :email => @user.email
+      }
+      UserMailer.signup_confirmation(@options).deliver
+    end
+
+    it "should have the right recipient" do
+      EMAILS.last.to.should == [ @user.email ]
+    end
+
+    it "should have the right body" do
+      email_body = EMAILS.last.body.encoded
+      email_body.should contain(
+        "http://#{@options[:host]}#{confirm_user_path(@options[:token])}")
     end
   end
 end
