@@ -9,6 +9,9 @@
       <td class="sidebar round">
         <%= render 'shared/user_info' %>
         <%= render 'shared/stats' %>
+        <%= image_tag('feed.png') %>
+        <%= link_to "Subscribe", private_user_feed_path(
+          @user.username, @user.encrypted_password, :format => :rss) %>
       </td>
     </tr>
   </table>

@@ -47,6 +47,12 @@ describe PagesController do
         get :home
         response.should have_selector("span.user", :content => @user.username)
       end
+
+      it "should have a link to the rss version of the user's status feed" do
+        get :home
+        response.should have_selector("a", :href => private_user_feed_path(
+          @user.username, @user.encrypted_password, :format => :rss))
+      end
     end
   end
 

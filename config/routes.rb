@@ -12,7 +12,11 @@ SampleApp::Application.routes.draw do
     member do
       get :following, :followers, :confirm, :feed
     end
+    resources :feeds, :only => [] do
+      get :private, :on => :member
+    end
   end
+
   resources :sessions,      :only => [:new, :create, :destroy]
   resources :microposts,    :only => [:create, :destroy]
   resources :relationships, :only => [:create, :destroy]
