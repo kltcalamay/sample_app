@@ -16,13 +16,48 @@
     </tr>
   </table>
 <% else %>
-  <h1>Sample App</h1>
+  <%= link_to "Sign up now!", signup_path, :class => "signup_button round" %>
+
+  <h1><i>Welcome!</i></h1>
 
   <p>
-    This is the home page for the
-    <a href="http://railstutorial.org/">Ruby on Rails Tutorial</a>
-    sample application.
+    Hi and welcome to The Microblog Project. This is basically a website built
+    upon the resulting application from following Michael Hartl's tutorial at
+    <a href="http://railstutorial.org/book">http://railstutorial.org/book</a>.
   </p>
 
-  <%= link_to "Sign up now!", signup_path, :class => "signup_button round" %>
+  <h1><i>What's been added?</i></h1>
+
+  <p>
+    On chapter 12 of the said tutorial, Mike listed <a href="http://railstutorial.org/chapters/following-users#sec:extensions_to_the_sample_application">possible extensions</a>
+    to the application, which a follower can work on. He said, "implementing one
+    or more of these application extensions will help you make the transition
+    from following a tutorial to writing original applications of your own."
+  </p>
+
+  <p>
+    Here's what's been added so far. I'm currently working on the last two extensions.
+  </p>
+
+  <table>
+    <tr>
+      <td>1. Replies</td>
+      <td>3. Follower notifications</td>
+      <td>5. Signup confirmation</td>
+    </tr>
+    <tr>
+      <td>2. Messaging</td>
+      <td>4. Password reminders</td>
+      <td>6. RSS feed</td>
+    </tr>
+  </table>
+
+  <h1><i>Show me the codes!</i></h1>
+
+  <p>
+    If you came here to see how far this application has gone from the original
+    version, I've listed instructions on the <a href="/help">help page</a> to help you in your
+    endeavor. If you're here besides that, why not <%= link_to "sign up", signup_path %>?
+  </p>
+  
 <% end %>
