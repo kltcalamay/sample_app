@@ -18,6 +18,8 @@
       <strong>URL</strong> <%= link_to user_path(@user), @user %><br />
       <strong>Microposts</strong> <%= @user.microposts.count %>
       <%= render 'shared/stats' %>
+      <%= image_tag('feed.png', :alt => 'rss feed icon') %>
+      <%= link_to "Subscribe", feed_user_path(@user, :format => :rss) %>
     </td>
   </tr>
 </table>

@@ -24,7 +24,7 @@ describe UsersController do
         @users = [@user, second, third]
         30.times do
           @users << Factory(:user, :email => Factory.next(:email),
-                                   :username => Factory.next(:username))
+            :username => Factory.next(:username))
         end
       end
 
@@ -57,9 +57,9 @@ describe UsersController do
         response.should have_selector("div.pagination")
         response.should have_selector("span.disabled", :content => "Previous")
         response.should have_selector("a", :href => "/users?page=2",
-                                           :content => "2")
+          :content => "2")
         response.should have_selector("a", :href => "/users?page=2",
-                                           :content => "Next")
+          :content => "Next")
       end
     end
   end
@@ -97,6 +97,12 @@ describe UsersController do
       response.should have_selector("span.content", :content => mp1.content)
       response.should have_selector("span.content", :content => mp2.content)
     end
+
+    it "should have a link to the feed of the current user being shown" do
+      get :show, :id => @user.username
+      response.should have_selector("a",
+        :href => feed_user_path(@user, :format => :rss))
+    end
   end
 
   describe "GET 'new'" do
@@ -117,7 +123,7 @@ describe UsersController do
 
       before(:each) do
         @attr = { :name => "", :email => "", :password => "",
-                  :password_confirmation => "" }
+          :password_confirmation => "" }
       end
 
       it "should not create a user" do
@@ -141,8 +147,8 @@ describe UsersController do
 
       before(:each) do
         @attr = { :name => "New User", :email => "user@example.com",
-                  :password => "foobar", :password_confirmation => "foobar",
-                  :username => 'newuser'}
+          :password => "foobar", :password_confirmation => "foobar",
+          :username => 'newuser'}
       end
 
       it "should create a user in an inactive state" do
@@ -196,7 +202,7 @@ describe UsersController do
       get :edit, :id => @user.username
       gravatar_url = "http://gravatar.com/emails"
       response.should have_selector("a", :href => gravatar_url,
-                                         :content => "change")
+        :content => "change")
     end
   end
 
@@ -211,7 +217,7 @@ describe UsersController do
 
       before(:each) do
         @attr = { :email => "", :name => "", :password => "",
-                  :password_confirmation => "" }
+          :password_confirmation => "" }
       end
 
       it "should render the 'edit' page" do
@@ -229,7 +235,7 @@ describe UsersController do
 
       before(:each) do
         @attr = { :name => "New Name", :email => "user@example.org",
-                  :password => "barbaz", :password_confirmation => "barbaz"}
+          :password => "barbaz", :password_confirmation => "barbaz"}
       end
 
       it "should change the user's attributes" do
@@ -274,7 +280,7 @@ describe UsersController do
 
       before(:each) do
         wrong_user = Factory(:user, :email => "user@example.net",
-                                    :username => "wrong_user")
+          :username => "wrong_user")
         test_sign_in(wrong_user)
       end
 
@@ -315,7 +321,7 @@ describe UsersController do
 
       before(:each) do
         admin = Factory(:user, :email => "admin@example.com",
-                               :username => "admin", :admin => true)
+          :username => "admin", :admin => true)
         test_sign_in(admin)
       end
 
@@ -352,20 +358,20 @@ describe UsersController do
       before(:each) do
         @user = test_sign_in(Factory(:user))
         @other_user = Factory(:user, :email => Factory.next(:email),
-                                     :username => Factory.next(:username))
+          :username => Factory.next(:username))
         @user.follow!(@other_user)
       end
 
       it "should show user following" do
         get :following, :id => @user.username
         response.should have_selector("a", :href => user_path(@other_user),
-                                           :content => @other_user.name)
+          :content => @other_user.name)
       end
 
       it "should show user followers" do
         get :followers, :id => @other_user.username
         response.should have_selector("a", :href => user_path(@user),
-                                           :content => @user.name)
+          :content => @user.name)
       end
     end
   end
@@ -378,6 +384,31 @@ describe UsersController do
     it "should activate the user's account" do
       get :confirm, :id => Crypto.encrypt( "#{@user.id}" )
       @user.reload.state.should == "active"
+    end
+  end
+
+  describe "GET 'feed'" do
+    before(:each) do
+      @user = Factory(:user)
+      
+    end
+
+    it "should show an rss feed with 10 microposts of the user in question" do
+      11.times { |i| @user.microposts.create!(:content => "micropost #{i+1}") }
+      get :feed, :id => @user.username, :format => :rss
+
+      10.times do |n|
+        # search for contents "micropost 11" to "micropost 2" because
+        # micropost is queried from the latest (i.e. micropost 11)
+        response.should have_selector("title", :content => "micropost #{n+2}")
+      end
+      # response should not contain the earliest micropost (i.e. micropost 1)
+      response.should_not contain(/^micropost 1$/)
+    end
+
+    it "should be accessible even if the user is not logged in" do
+      get :feed, :id => @user.username, :format => :rss
+      response.should_not redirect_to(signin_path)
     end
   end
 end

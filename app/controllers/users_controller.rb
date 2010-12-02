@@ -1,7 +1,7 @@
 require 'crypto'
 
 class UsersController < ApplicationController
-  before_filter :authenticate, :except => [:show, :new, :create, :confirm]
+  before_filter :authenticate, :except => [:show, :new, :create, :confirm, :feed]
   before_filter :correct_user, :only => [:edit, :update]
   before_filter :admin_user,   :only => :destroy
 
@@ -14,6 +14,11 @@ class UsersController < ApplicationController
     @user = User.find_by_username(params[:id])
     @microposts = @user.microposts.paginate(:page => params[:page])
     @title = @user.name
+
+    respond_to do |extension|
+      extension.html
+      extension.rss { render :layout => false }
+    end
   end
 
   def new
@@ -88,6 +93,15 @@ class UsersController < ApplicationController
     rescue
       flash[:error] = "Invalid confirmation token."
       redirect_to root_url
+    end
+  end
+
+  def feed
+    @user = User.find_by_username( params[:id] )
+    @microposts = @user.microposts.limit(10)
+
+    respond_to do |extension|
+      extension.rss { render :layout => false}
     end
   end
 
