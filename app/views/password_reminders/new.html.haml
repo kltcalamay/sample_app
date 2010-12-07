@@ -1,0 +1,26 @@
+/BEGIN password_reminders/new.html.haml
+
+%fieldset
+  %legend Recover Password
+
+  %p
+    If you have forgotten your password, enter your username below
+    and click the "Recover My Account" button.
+    %br/
+    %br/
+    An email will be sent with a link to your address on record.
+    Click this link to login and change your password.
+    %br/
+    %br/
+    The link given will no longer function after your password is changed.
+
+  = form_tag password_reminders_path, :method => :post do
+
+    %label{:for => "username"} Username
+    %br/
+    = text_field_tag :username
+    %br/
+
+    = submit_tag "Recovery My Account"
+
+/END password_reminders/new.html.haml
