@@ -1,0 +1,14 @@
+/BEGIN layouts/_stylesheets.html.haml
+
+/[if lt IE 9]
+  %script{ :src => "http://html5shiv.googlecode.com/svn/trunk/html5.js" }
+
+= stylesheet_link_tag 'blueprint/screen', :media => 'screen'
+= stylesheet_link_tag 'blueprint/print',  :media => 'print'
+
+/[if lt IE 8]
+  = stylesheet_link_tag 'blueprint/ie'
+
+= stylesheet_link_tag 'custom', :media => 'screen'
+
+/END layouts/_stylesheets.html.haml

@@ -1,0 +1,22 @@
+/BEGIN layouts/_header.html.haml
+
+%header
+  = link_to logo, root_path
+  %nav.round
+    %ul
+      %li= link_to "Home", root_path
+
+      - if signed_in?
+        %li= link_to "Users", users_path
+        %li= link_to "Profile", current_user
+        %li= link_to "Direct Messages", received_direct_messages_path
+        %li= link_to "Settings", edit_user_path(current_user)
+
+      %li= link_to "Help", help_path
+
+      - if signed_in?
+        %li= link_to "Sign out", signout_path, :method => :delete
+      - else
+        %li= link_to "Sign in", signin_path
+
+/END layouts/_header.html.haml
