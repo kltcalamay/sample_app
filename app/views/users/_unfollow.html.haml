@@ -1,0 +1,7 @@
+/BEGIN users/_unfollow.html.haml
+
+= form_for current_user.relationships.find_by_followed_id(@user),
+      :html => { :method => :delete }, :remote => true do |f|
+  .actions= f.submit "Unfollow"
+
+/END users/_unfollow.html.haml

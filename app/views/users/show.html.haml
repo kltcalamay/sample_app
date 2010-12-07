@@ -1,0 +1,33 @@
+/BEGIN users/show.html.haml
+
+%table.profile{:summary => "Profile information"}
+  %tr
+    %td.main
+      %h1
+        = gravatar_for @user
+        = @user.name
+
+      = render 'follow_form' if signed_in?
+
+      - unless @user.microposts.empty?
+        %table.microposts{:summary => "User microposts"}
+          = render @microposts
+        = will_paginate @microposts
+
+    %td.sidebar.round
+      %strong Name
+      = @user.name
+      %br/
+
+      %strong URL
+      = link_to user_path(@user), @user
+      %br/
+
+      %strong Microposts
+      = @user.microposts.count
+
+      = render 'shared/stats'
+      = image_tag('feed.png', :alt => 'rss feed icon')
+      = link_to "Subscribe", feed_user_path(@user, :format => :rss)
+
+/END users/show.html.haml

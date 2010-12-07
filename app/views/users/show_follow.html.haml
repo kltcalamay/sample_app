@@ -1,0 +1,30 @@
+/BEGIN users/show_follow.html.haml
+
+%table{:summary => "Information about following/followers"}
+  %tr
+    %td.main
+      %h1= @title
+
+      - unless @users.empty?
+        %ul.users
+          = render @users
+        = will_paginate @users
+
+    %td.sidebar.round
+      %strong Name
+      = @user.name
+      %br/
+
+      %strong URL
+      = link_to user_path(@user), @user
+      %br/
+
+      %strong Microposts
+      = @user.microposts.count
+
+      = render 'shared/stats'
+      - unless @users.empty?
+        - @users.each do |user|
+          = link_to gravatar_for(user, :size => 30), user
+
+/END users/show_follow.html.haml
