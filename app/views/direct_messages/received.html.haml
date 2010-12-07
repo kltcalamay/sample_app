@@ -1,0 +1,19 @@
+/BEGIN direct_messages/received.html.haml
+
+= render :partial => 'menu'
+
+- if @direct_messages
+  %table.microposts
+    - @direct_messages.each do |dm|
+      %tr
+        %td.gravatar
+          = link_to gravatar_for(dm.sender), dm.sender
+
+        %td.micropost
+          %span.user= link_to dm.sender.username, dm.sender
+          %span.content= dm.content
+          %span.timestamp
+            = time_ago_in_words(dm.created_at)
+            ago.
+
+/END direct_messages/received.html.haml

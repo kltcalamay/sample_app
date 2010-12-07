@@ -1,0 +1,18 @@
+/BEGIN direct_messages/_menu.html.haml
+
+%nav.submenu
+  %ul
+    %li.round
+      = link_to_unless_current "Received Items", received_direct_messages_path
+    %li.round
+      = link_to_unless_current "Sent Items", sent_direct_messages_path
+
+%p.instructions
+  To send a direct message, prepend your micropost with the lowercase letter d
+  followed by the recipient's username. For example, given a valid user with
+  username "kenneth", you can post:
+  %span.center "d kenneth this is a sample direct (i.e. private) message"
+  = link_to "Click here", root_path
+  to send a direct message.
+
+/END direct_messages/_menu.html.haml
