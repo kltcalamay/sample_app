@@ -1,0 +1,17 @@
+/BEGIN shared/error_messages.html.haml
+
+- if object.errors.any?
+  #error_explanation
+    %h2
+      = pluralize(object.errors.count, "error")
+      prohibited this
+      = object.class.to_s.underscore.humanize.downcase
+      from being saved:
+
+    %p There were problems with the following fields:
+
+    %ul
+      - object.errors.full_messages.each do |msg|
+        %li= msg
+
+/END shared/error_messages.html.haml

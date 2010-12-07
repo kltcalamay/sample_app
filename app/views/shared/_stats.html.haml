@@ -1,0 +1,16 @@
+/BEGIN shared/_stats.html.haml
+
+- @user ||= current_user
+.stats
+  %table{:summary => "User stats"}
+    %tr
+      %td
+        %a{ :href => "#{following_user_path(@user)}" }
+          %span.stat#following
+            = "#{@user.following.count} following"
+      %td
+        %a{ :href => "#{followers_user_path(@user)}" }
+          %span.stat#followers
+            = pluralize(@user.followers.count, "follower")
+
+/END shared/_stats.html.haml

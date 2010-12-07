@@ -1,0 +1,9 @@
+/BEGIN shared/_feed.html.haml
+
+- unless @feed_items.empty?
+  %table.microposts{ :summary => "User microposts" }
+    = render :partial => 'shared/feed_item', :collection => @feed_items
+
+  = will_paginate @feed_items
+
+/END shared/_feed.html.haml

@@ -1,0 +1,11 @@
+/BEGIN shared/_user_info.html.haml
+
+.user_info
+  %a{ :href => "#{ user_path(current_user) }"}
+    = gravatar_for current_user, :size => 30
+    %span.user_name
+      = current_user.name
+    %span.microposts
+      = pluralize(current_user.microposts.count, "micropost")
+
+/END shared/_user_info.html.haml
