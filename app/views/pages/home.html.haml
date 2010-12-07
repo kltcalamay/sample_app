@@ -1,0 +1,64 @@
+/BEGIN home.html.haml
+
+- if signed_in?
+  %table.front{:summary => "For signed-in users"}
+    %tr
+      %td.main
+        %h1.micropost What's up?
+        = render 'shared/micropost_form'
+        = render 'shared/feed'
+
+      %td.sidebar.round
+        = render 'shared/user_info'
+        = render 'shared/stats'
+        = image_tag('feed.png')
+        = link_to "Subscribe", private_user_feed_path(@user.username,
+                               @user.encrypted_password, :format => :rss)
+     
+- else
+  = link_to "Sign up now!", signup_path, :class => "signup_button round"
+
+  %h1
+    %i Welcome!
+
+  %p
+    Hi and welcome to The Microblog Project. This is basically a website built
+    upon the resulting application from following Michael Hartl's tutorial at
+    %a{:href => "http://railstutorial.org/book"} http://railstutorial.org/book.
+
+  %h1
+    %i What's been added?
+
+  %p
+    On chapter 12 of the said tutorial, Mike listed
+    %a{:href => "http://railstutorial.org/chapters/following-users#sec:extensions_to_the_sample_application"} possible extensions
+    to the application, which a follower can work on. He said, "implementing one
+    or more of these application extensions will help you make the transition
+    from following a tutorial to writing original applications of your own."
+
+  %p
+    Here's what's been added so far. I'm currently working on the last two extensions.
+
+  %table
+    %tr
+      %td 1. Replies
+      %td 3. Follower notifications
+      %td 5. Signup confirmation
+
+    %tr
+      %td 2. Messaging
+      %td 4. Password reminders
+      %td 6. RSS feed
+
+  %h1
+    %i Show me the codes!
+
+  %p
+    If you came here to see how far this application has gone from the original
+    version, I've listed instructions on the
+    %a{:href => "/help"} help page
+    to help you in your endeavor. If you're here besides that, why not
+    = link_to "sign up", signup_path
+    ?
+
+/END pages/home.html.haml
